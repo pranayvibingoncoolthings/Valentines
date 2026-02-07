@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Valentine?</title>
+  <style>
+    :root{
+      --bg1:#fff1f5;
+      --bg2:#fff7ed;
+      --card:#ffffffcc;
+      --text:#111827;
+      --muted:#6b7280;
+      --yes:#16a34a;
+      --no:#ef4444;
+      --shadow: 0 20px 60px rgba(17,24,39,.12);
+      --radius: 24px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background: radial-gradient(1000px 700px at 20% 0%, var(--bg1), transparent 60%),
+                  radial-gradient(1000px 700px at 80% 20%, var(--bg2), transparent 60%),
+                  linear-gradient(180deg, #ffffff, #fff7f5);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      overflow:hidden;
+    }
+
+    /* floating hearts */
+    .heart {
+      position: fixed;
+      width: 14px;
+      height: 14px;
+      transform: rotate(45deg);
+      background: rgba(244, 63, 94, .18);
+      border-radius: 2px;
+      animation: floatUp linear infinite;
+      pointer-events:none;
+      filter: blur(.2px);
+    }
+    .heart:before,.heart:after{
+      content:"";
+      position:absolute;
+      width:14px;height:14px;
+      border-radius:50%;
+      background: rgba(244, 63, 94, .18);
+    }
+    .heart:before{ left:-7px; top:0; }
+    .heart:after{ top:-7px; left:0; }
+
+    @keyframes floatUp{
+      from { transform: translateY(110vh) rotate(45deg); opacity:0; }
+      10% { opacity:1; }
+      to { transform: translateY(-20vh) rotate(45deg); opacity:0; }
+    }
+
+    .card{
+      width:min(680px, 100%);
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 28px;
+      position: relative;
+    }
+
+    .badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:10px 14px;
+      border-radius:999px;
+      background: rgba(244,63,94,.10);
+      border:1px solid rgba(244,63,94,.18);
+      color:#be123c;
+      font-weight:600;
+      font-size:14px;
+    }
+
+    h1{
+      margin: 18px 0 8px;
+      font-size: clamp(26px, 3.2vw, 36px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    p{
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .hero{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+
+    .left{
+      flex: 1 1 340px;
+    }
+
+    .right{
+      flex: 0 1 220px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .photo{
+      width: 180px;
+      height: 180px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(244,63,94,.25), rgba(251,146,60,.18));
+      border: 1px solid rgba(244,63,94,.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .photo span{
+      font-size: 54px;
+      opacity:.9;
+    }
+
+    .buttons{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top: 18px;
+      position: relative;
+      min-height: 56px;
+    }
+
+    button{
+      border:0;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+      box-shadow: 0 10px 20px rgba(0,0,0,.08);
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active{ transform: translateY(1px) scale(.99); }
+    .yes{
+      background: linear-gradient(180deg, #22c55e, #16a34a);
+      color:white;
+    }
+    .no{
+      background: linear-gradient(180deg, #fb7185, #ef4444);
+      color:white;
+      position: relative;
+    }
+
+    .tiny{
+      font-size: 13px;
+      margin-top: 10px;
+      color: rgba(107,114,128,.95);
+    }
+
+    .result{
+      display:none;
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(34,197,94,.10);
+      border: 1px solid rgba(34,197,94,.18);
+      color:#065f46;
+      font-weight: 650;
+    }
+
+    .date-card{
+      display:none;
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.85);
+      border: 1px solid rgba(17,24,39,.06);
+      box-shadow: 0 12px 30px rgba(17,24,39,.08);
+    }
+
+    .date-card h2{
+      margin:0 0 8px;
+      font-size: 18px;
+    }
+    .date-card ul{
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: #374151;
+      line-height: 1.5;
+    }
+    .date-card li{ margin: 6px 0; }
+
+    /* confetti canvas */
+    canvas#confetti{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      display:none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti"></canvas>
+
+  <div class="card">
+    <div class="badge">💌 Tiny question, huge vibes</div>
+
+    <div class="hero">
+      <div class="left">
+        <h1 id="title">Will you be my Valentine? 💘</h1>
+        <p id="subtitle">
+          Hi love. I know you’re already my fiancée… but I still want to do the whole
+          “officially asking you out” thing. Because you’re my favourite person.
+        </p>
+
+        <div class="buttons" id="btnArea">
+          <button class="yes" id="yesBtn">Yes 😌</button>
+          <button class="no" id="noBtn">No 🙃</button>
+        </div>
+
+        <div class="result" id="result">
+          YAY. Locked in. No refunds. No take-backs. 💚
+        </div>
+
+        <div class="date-card" id="dateCard">
+          <h2>Valentine’s plan (proposed):</h2>
+          <ul>
+            <li>🗓️ A proper date night — you pick the vibe (cute / fancy / chill)</li>
+            <li>🍽️ Dinner + dessert (obviously)</li>
+            <li>📸 One dumb cute photo together</li>
+            <li>💬 And me being annoyingly grateful that it’s you</li>
+          </ul>
+          <p class="tiny" id="footerNote">Reply with “YES YES YES” and I’ll handle the rest 👀</p>
+        </div>
+
+        <p class="tiny" id="tinyLine">
+          P.S. If you hit “No”, the button might behave… emotionally.
+        </p>
+      </div>
+
+      <div class="right">
+        <div class="photo" aria-label="Cute icon">
+          <span>🥹</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Floating hearts background ---
+    const heartsCount = 14;
+    for (let i = 0; i < heartsCount; i++) {
+      const h = document.createElement('div');
+      h.className = 'heart';
+      const left = Math.random() * 100;
+      const dur = 7 + Math.random() * 8;
+      const delay = Math.random() * 6;
+      const size = 10 + Math.random() * 16;
+      h.style.left = left + 'vw';
+      h.style.animationDuration = dur + 's';
+      h.style.animationDelay = delay + 's';
+      h.style.width = size + 'px';
+      h.style.height = size + 'px';
+      document.body.appendChild(h);
+    }
+
+    // --- Button logic ---
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const result = document.getElementById('result');
+    const dateCard = document.getElementById('dateCard');
+    const title = document.getElementById('title');
+    const subtitle = document.getElementById('subtitle');
+    const tinyLine = document.getElementById('tinyLine');
+
+    const noLines = [
+      "Are you sure? 😭",
+      "Like… *really* sure? 🥺",
+      "Don’t do this to me bestie 😔",
+      "Okay but what if I say please 👀",
+      "I will literally bring snacks",
+      "This is violence",
+      "Last chance, madam fiancé(e) 😤"
+    ];
+    let noClicks = 0;
+
+    function moveNoButton() {
+      // Keep it within the button area bounds
+      const area = document.getElementById('btnArea');
+      const rect = area.getBoundingClientRect();
+
+      const maxX = Math.max(0, rect.width - noBtn.offsetWidth);
+      const maxY = Math.max(0, rect.height - noBtn.offsetHeight);
+
+      // If the container is too small, just shake instead
+      if (maxX < 20 || maxY < 10) {
+        noBtn.style.transform = "translateX(-3px)";
+        setTimeout(()=> noBtn.style.transform = "translateX(3px)", 60);
+        setTimeout(()=> noBtn.style.transform = "translateX(0)", 120);
+        return;
+      }
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
+      noBtn.style.position = "absolute";
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+
+    noBtn.addEventListener('click', () => {
+      noClicks++;
+      noBtn.textContent = noLines[Math.min(noClicks - 1, noLines.length - 1)];
+      // Make YES grow a tiny bit each time
+      const scale = 1 + Math.min(noClicks * 0.08, 0.5);
+      yesBtn.style.transform = `scale(${scale})`;
+      moveNoButton();
+      tinyLine.textContent = "P.S. I respect your choices. I just… don’t understand them. 😌";
+    });
+
+    // --- YES = confetti + reveal plan ---
+    yesBtn.addEventListener('click', () => {
+      title.textContent = "Correct answer. 😌💘";
+      subtitle.textContent = "Okay hi. I love you. It’s a date. Consider this a legally binding agreement (romantically).";
+      result.style.display = "block";
+      dateCard.style.display = "block";
+
+      yesBtn.disabled = true;
+      noBtn.disabled = true;
+      yesBtn.style.opacity = 0.9;
+      noBtn.style.opacity = 0.35;
+
+      launchConfetti();
+    });
+
+    // --- Simple confetti (no libraries) ---
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    let confettiPieces = [];
+    let confettiRunning = false;
+
+    function resizeCanvas(){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function makeConfetti() {
+      const count = 220;
+      confettiPieces = Array.from({length: count}, () => ({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * canvas.height * 0.2,
+        w: 6 + Math.random() * 6,
+        h: 10 + Math.random() * 10,
+        vx: -2 + Math.random() * 4,
+        vy: 2 + Math.random() * 5,
+        rot: Math.random() * Math.PI,
+        vr: -0.2 + Math.random() * 0.4,
+        alpha: 0.9
+      }));
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.globalAlpha = 1;
+
+      for (const p of confettiPieces) {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = p.alpha;
+
+        // No fixed colors requested — but confetti needs SOME colors.
+        // We'll generate pleasant random pastel-ish colors.
+        const hue = (p.x / canvas.width) * 360;
+        ctx.fillStyle = `hsla(${hue}, 85%, 65%, ${p.alpha})`;
+
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      }
+    }
+
+    function updateConfetti() {
+      for (const p of confettiPieces) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.vy += 0.03; // gravity
+        p.alpha = Math.max(0, p.alpha - 0.002);
+
+        if (p.y > canvas.height + 40 || p.alpha <= 0) {
+          // recycle
+          p.y = -20;
+          p.x = Math.random() * canvas.width;
+          p.vy = 2 + Math.random() * 5;
+          p.alpha = 0.9;
+        }
+      }
+    }
+
+    function loopConfetti(){
+      if (!confettiRunning) return;
+      updateConfetti();
+      drawConfetti();
+      requestAnimationFrame(loopConfetti);
+    }
+
+    function launchConfetti(){
+      canvas.style.display = 'block';
+      confettiRunning = true;
+      makeConfetti();
+      loopConfetti();
+      setTimeout(() => {
+        confettiRunning = false;
+        canvas.style.display = 'none';
+      }, 4200);
+    }
+  </script>
+</body>
+</html>
