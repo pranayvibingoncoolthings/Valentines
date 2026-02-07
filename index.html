@@ -62,7 +62,7 @@
     }
 
     .card{
-      width:min(720px, 100%);
+      width:min(740px, 100%);
       background: var(--card);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,.7);
@@ -81,7 +81,7 @@
       background: rgba(244,63,94,.10);
       border:1px solid rgba(244,63,94,.18);
       color:#be123c;
-      font-weight:700;
+      font-weight:800;
       font-size:14px;
     }
 
@@ -107,7 +107,7 @@
       flex-wrap:wrap;
     }
 
-    .left{ flex: 1 1 380px; }
+    .left{ flex: 1 1 400px; }
     .right{
       flex: 0 1 220px;
       display:flex;
@@ -139,15 +139,15 @@
       flex-wrap:wrap;
       margin-top: 18px;
       position: relative;
-      min-height: 64px;
-      padding-bottom: 6px;
+      min-height: 74px;
+      padding-bottom: 10px;
     }
 
     button{
       border:0;
       border-radius: 14px;
       padding: 14px 18px;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 16px;
       cursor:pointer;
       transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
@@ -173,6 +173,17 @@
       color: rgba(107,114,128,.95);
     }
 
+    .hint{
+      display:inline-block;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(17,24,39,.04);
+      border: 1px dashed rgba(17,24,39,.12);
+      color: rgba(55,65,81,.95);
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
     .result{
       display:none;
       margin-top: 18px;
@@ -181,7 +192,7 @@
       background: rgba(34,197,94,.10);
       border: 1px solid rgba(34,197,94,.18);
       color:#065f46;
-      font-weight: 750;
+      font-weight: 850;
     }
 
     .date-card{
@@ -206,17 +217,6 @@
     }
     .date-card li{ margin: 6px 0; }
 
-    .hint{
-      display:inline-block;
-      padding: 8px 10px;
-      border-radius: 12px;
-      background: rgba(17,24,39,.04);
-      border: 1px dashed rgba(17,24,39,.12);
-      color: rgba(55,65,81,.95);
-      font-size: 13px;
-      margin-top: 8px;
-    }
-
     /* confetti canvas */
     canvas#confetti{
       position: fixed;
@@ -237,8 +237,7 @@
       <div class="left">
         <h1 id="title">VM… will you be my Valentine? 💘</h1>
         <p id="subtitle">
-          I know you’re already my fiancée, but I’m re-asking you out because I enjoy unnecessary drama
-          and you deserve a proper “will you” moment.
+          Yes, you’re already my fiancée. Still asking. Because I enjoy unnecessary drama and you deserve a proper “will you” moment.
         </p>
 
         <div class="buttons" id="btnArea">
@@ -246,28 +245,42 @@
           <button class="no" id="noBtn">No 🙃</button>
         </div>
 
-        <div class="hint" id="hint">
-          Tip: clicking “Yes” too early may have… consequences.
-        </div>
+        <div class="hint" id="hint">Tip: clicking “Yes” too early may have… consequences.</div>
 
         <div class="result" id="result">
           Great. Confirmed. Locked in. Screenshot-proof. 💚
         </div>
 
         <div class="date-card" id="dateCard">
-          <h2>Valentine’s plan (proposed):</h2>
+          <h2>Virtual Valentine’s plan (proposed):</h2>
           <ul>
-            <li>🗓️ A proper date — I’ll plan, you just show up and look iconic</li>
-            <li>🍽️ Dinner + something sweet (non-negotiable)</li>
+            <li>📱 We dress up at home and pretend it’s “casual”</li>
+            <li>🍽️ Dinner together on video + dessert together on video (mandatory)</li>
             <li>🎁 One small surprise (no hints, no bargaining)</li>
-            <li>📸 One cute photo + one stupid photo (balance)</li>
-            <li>💬 End note: it’s always been you. Always.</li>
+            <li>📸 One cute screenshot + one stupid screenshot (balance)</li>
+            <li>💬 End note: you’re my favourite person. Unfortunately for you.</li>
           </ul>
-          <p class="tiny" id="footerNote">Reply with “okay fiancé” and I’ll handle the rest 👀</p>
+
+          <p class="tiny" id="footerNote">
+            ✅ Screenshot this screen and send it to me as proof. Consider it your RSVP.
+          </p>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+            <button id="copyBtn" style="background:linear-gradient(180deg,#111827,#1f2937); color:#fff;">
+              Copy RSVP text
+            </button>
+            <button id="openWhatsAppBtn" style="background:linear-gradient(180deg,#60a5fa,#3b82f6); color:#fff;">
+              Send RSVP (WhatsApp)
+            </button>
+          </div>
+
+          <p class="tiny" id="rsvpText" style="margin-top:10px;">
+            VM RSVP: YES ✅ — virtual Valentine’s date confirmed. I accept the teasing. I also (annoyingly) love you.
+          </p>
         </div>
 
         <p class="tiny" id="tinyLine">
-          P.S. The “No” button is about to get very brave for no reason.
+          P.S. The “No” button is about to start cardio.
         </p>
       </div>
 
@@ -280,7 +293,7 @@
   </div>
 
   <script>
-    // --- Floating hearts background ---
+    // Floating hearts background
     const heartsCount = 14;
     for (let i = 0; i < heartsCount; i++) {
       const h = document.createElement('div');
@@ -307,54 +320,63 @@
     const hint = document.getElementById('hint');
     const emoji = document.getElementById('emoji');
 
-    // "Rabbit hole" scenes — she must survive a few interactions
+    const copyBtn = document.getElementById('copyBtn');
+    const openWhatsAppBtn = document.getElementById('openWhatsAppBtn');
+    const rsvpTextEl = document.getElementById('rsvpText');
+
+    // Rabbit-hole scenes (must survive a few interactions)
     const scenes = [
       {
         t: "VM… will you be my Valentine? 💘",
-        s: "I know you’re already my fiancée, but I’m re-asking you out because I enjoy unnecessary drama and you deserve a proper “will you” moment.",
+        s: "Yes, you’re already my fiancée. Still asking. Because I enjoy unnecessary drama and you deserve a proper “will you” moment.",
         e: "😌",
         yes: "Yes 😌",
         no: "No 🙃",
         tip: "Tip: clicking “Yes” too early may have… consequences.",
-        tiny: "P.S. The “No” button is about to get very brave for no reason."
+        tiny: "P.S. The “No” button is about to start cardio."
       },
       {
         t: "Okay wait. Before you answer—",
-        s: "Quick verification step. Are you clicking randomly or are you emotionally invested? Choose wisely.",
-        e: "🕵️‍♀️",
-        yes: "I’m invested ✅",
-        no: "I’m chaotic 🙃",
-        tip: "This is a serious (not serious) process."
+        s: "Long-distance Valentine’s edition. Are you ready for a virtual date night with me, your favourite menace?",
+        e: "📱",
+        yes: "I’m ready ✅",
+        no: "Depends 😤",
+        tip: "This is a serious (not serious) screening.",
+        tiny: "Don’t worry, I’ll still roast you on video."
       },
       {
-        t: "Interesting choice.",
-        s: "Now confirm: do you accept that I will be mildly annoying on this date? (Standard package.)",
-        e: "🤝",
+        t: "Good. Next question.",
+        s: "Do you accept that the date will include: us dressing up at home, judging each other’s outfits, and pretending it’s not cute?",
+        e: "🕺",
         yes: "Accept terms ✅",
-        no: "Read terms ❌",
-        tip: "The “terms” are 99% jokes and 1% me loving you."
+        no: "Show terms ❌",
+        tip: "Terms = 90% teasing, 10% me missing you.",
+        tiny: "Also dessert is a constitutional right."
       },
       {
-        t: "One last test, VM.",
-        s: "Would you rather: (A) cute date night, (B) chaos date night, or (C) both because obviously both.",
-        e: "🎭",
-        yes: "Both, obviously 😌",
-        no: "I need option D",
-        tip: "Option D is “click yes”."
+        t: "Logistics check, madam.",
+        s: "Virtual date menu: (A) dinner together on video, (B) dessert together on video, (C) both. (Correct answer exists.)",
+        e: "🍽️",
+        yes: "C, obviously 😌",
+        no: "I want option D",
+        tip: "Option D is you clicking yes.",
+        tiny: "The “No” button is literally running away from responsibility."
       },
       {
-        t: "Okay, enough messing.",
-        s: "For real though — I love you. And I still get excited asking you out. So…",
+        t: "Okay, enough nonsense, VM.",
+        s: "I roast you because I like you. I tease you because I miss you. And I still get excited asking you out — even from miles away.",
         e: "🥹",
         yes: "Yes, I’m your Valentine 💚",
         no: "Stop being cute 🙄",
-        tip: "This is your last chance to pretend you’re not soft."
+        tip: "Last chance to pretend you’re not soft.",
+        tiny: "Click yes and let me be smug."
       }
     ];
 
     let sceneIndex = 0;
     let noClicks = 0;
     let yesEarlyClicks = 0;
+    let ctaWired = false;
 
     function applyScene(i){
       const sc = scenes[i];
@@ -364,89 +386,97 @@
       yesBtn.textContent = sc.yes;
       noBtn.textContent = sc.no;
       hint.textContent = sc.tip || "";
-      if (!sc.tip) hint.style.display = "none";
-      else hint.style.display = "inline-block";
+      hint.style.display = sc.tip ? "inline-block" : "none";
       if (sc.tiny) tinyLine.textContent = sc.tiny;
     }
 
     function nextScene(){
       sceneIndex = Math.min(sceneIndex + 1, scenes.length - 1);
       applyScene(sceneIndex);
-      // Make YES gradually more tempting
-      const scale = 1 + Math.min(sceneIndex * 0.10, 0.5);
+      const scale = 1 + Math.min(sceneIndex * 0.12, 0.55);
       yesBtn.style.transform = `scale(${scale})`;
     }
 
-    function moveNoButton() {
+    function moveNoButton(power = 1) {
       const area = document.getElementById('btnArea');
       const rect = area.getBoundingClientRect();
 
       const maxX = Math.max(0, rect.width - noBtn.offsetWidth);
       const maxY = Math.max(0, rect.height - noBtn.offsetHeight);
 
-      if (maxX < 20 || maxY < 10) {
-        noBtn.style.transform = "translateX(-3px)";
-        setTimeout(()=> noBtn.style.transform = "translateX(3px)", 60);
-        setTimeout(()=> noBtn.style.transform = "translateX(0)", 120);
+      // If the container is too small, do a dramatic shake
+      if (maxX < 30 || maxY < 20) {
+        noBtn.style.transform = "translateX(-8px)";
+        setTimeout(()=> noBtn.style.transform = "translateX(8px)", 70);
+        setTimeout(()=> noBtn.style.transform = "translateX(-6px)", 140);
+        setTimeout(()=> noBtn.style.transform = "translateX(6px)", 210);
+        setTimeout(()=> noBtn.style.transform = "translateX(0)", 280);
         return;
       }
 
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
+      // Move further as power increases
+      const pad = Math.min(18 * power, 60);
+      const x = pad + Math.random() * (maxX - pad * 2);
+      const y = Math.random() * (maxY - 6);
 
       noBtn.style.position = "absolute";
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
+      noBtn.style.left = `${Math.max(0, Math.min(maxX, x))}px`;
+      noBtn.style.top  = `${Math.max(0, Math.min(maxY, y))}px`;
     }
 
-    // NO path: always advances the rabbit hole (and gets dramatic)
+    // Dodge even before she clicks (hover)
+    noBtn.addEventListener('mouseenter', () => {
+      if (!noBtn.disabled) moveNoButton(1 + sceneIndex * 0.7);
+    });
+
+    // Dodge on mobile touch start (pre-click)
+    noBtn.addEventListener('touchstart', () => {
+      if (!noBtn.disabled) moveNoButton(1 + sceneIndex * 0.7);
+    }, { passive: true });
+
+    // NO path: advances rabbit hole and gets dramatic
     noBtn.addEventListener('click', () => {
       noClicks++;
 
-      // If we're not at the last scene, go deeper
       if (sceneIndex < scenes.length - 1) {
-        // spice up copy based on how many no clicks
         if (noClicks === 1) tinyLine.textContent = "VM… why are you like this 😭";
         if (noClicks === 2) tinyLine.textContent = "Okay fine. I’ll order fries. Happy?";
         if (noClicks === 3) tinyLine.textContent = "This is emotional damage.";
         if (noClicks >= 4) tinyLine.textContent = "I’m tired. Click something helpful.";
 
-        moveNoButton();
+        moveNoButton(1 + sceneIndex * 0.7);
         nextScene();
         return;
       }
 
-      // At the last scene, NO becomes fake resistance
+      // At last scene: fake resistance
       noBtn.textContent = (noClicks >= 2) ? "ok fine 🙄" : "stop 🫠";
-      moveNoButton();
+      moveNoButton(1 + sceneIndex * 0.7);
       tinyLine.textContent = "You can pretend you’re not soft. I already know the truth.";
     });
 
-    // YES path: if clicked too early, it teases and pushes her deeper
+    // YES path: if clicked too early, tease and push deeper
     yesBtn.addEventListener('click', () => {
-      // If not last scene yet, block the win (rabbit hole)
       if (sceneIndex < scenes.length - 1) {
         yesEarlyClicks++;
 
         const teases = [
           "Nice try 😌 not yet.",
+          "VM, no speed-running. Earn it.",
           "Impatient fiancé energy detected.",
-          "No shortcuts, VM. Go through the process.",
-          "Okay okay… but one more thing first."
+          "Okay okay… one more checkpoint first.",
+          "Also… long-distance means extra steps. Rules are rules."
         ];
         tinyLine.textContent = teases[Math.min(yesEarlyClicks - 1, teases.length - 1)];
 
-        // advance anyway to keep the story moving
         nextScene();
-
-        // also make NO a bit more annoying so she can't speedrun
-        moveNoButton();
+        moveNoButton(1 + sceneIndex * 0.7);
         return;
       }
 
       // Final YES: real acceptance
-      title.textContent = "Correct answer. Obviously. 😌💘";
-      subtitle.textContent = "Okay hi. I love you. It’s a date. And I’m very lucky it’s you, VM.";
+      title.textContent = "Correct answer. Took you long enough. 😌💘";
+      subtitle.textContent = "You’re annoying. I’m annoying. But I miss you a lot — and I’m very lucky it’s you, VM. Virtual date night: confirmed.";
       result.style.display = "block";
       dateCard.style.display = "block";
       hint.style.display = "none";
@@ -456,10 +486,30 @@
       yesBtn.style.opacity = 0.92;
       noBtn.style.opacity = 0.35;
 
+      // CTA wiring (once)
+      if (!ctaWired) {
+        ctaWired = true;
+        const rsvpText = (rsvpTextEl?.textContent || "VM RSVP: YES ✅ — virtual Valentine’s date confirmed.").trim();
+
+        copyBtn?.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(rsvpText);
+            tinyLine.textContent = "Copied 😌 Now send it. Proof required.";
+          } catch {
+            tinyLine.textContent = "Couldn’t auto-copy (browser drama). Just screenshot + send 😌";
+          }
+        });
+
+        openWhatsAppBtn?.addEventListener('click', () => {
+          const msg = encodeURIComponent(rsvpText + " 💚");
+          window.open(`https://wa.me/?text=${msg}`, "_blank");
+        });
+      }
+
       launchConfetti();
     });
 
-    // --- Confetti (no external libs) ---
+    // Confetti (no external libs)
     const canvas = document.getElementById('confetti');
     const ctx = canvas.getContext('2d');
     let confettiPieces = [];
@@ -507,7 +557,7 @@
         p.x += p.vx;
         p.y += p.vy;
         p.rot += p.vr;
-        p.vy += 0.03; // gravity
+        p.vy += 0.03;
         p.alpha = Math.max(0, p.alpha - 0.002);
 
         if (p.y > canvas.height + 40 || p.alpha <= 0) {
@@ -537,9 +587,10 @@
       }, 4200);
     }
 
-    // init
+    // Init
     applyScene(sceneIndex);
   </script>
 </body>
 </html>
+
 
